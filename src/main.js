@@ -20,7 +20,7 @@ Vue.use(Element, {
 
 // 挂载全局
 Vue.prototype.$http = http
-Vue.prototype.$isAuth = isAuth
+Vue.prototype.isAuth = isAuth
 Vue.prototype.$getDictLabel = getDictLabel
 
 // 保存整站vuex本地储存初始状态

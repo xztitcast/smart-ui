@@ -44,8 +44,7 @@ export default {
     this.windowResizeHandle()
     this.routeHandle(this.$route)
     Promise.all([
-      this.getUserInfo(),
-      //this.getPermissions()
+      this.getUserInfo()
     ]).then(() => {
       this.loading = false
     })
@@ -86,15 +85,6 @@ export default {
         this.$store.state.user.id = res.data.id
         this.$store.state.user.name = res.data.username
         this.$store.state.user.superAdmin = res.data.superAdmin
-      }).catch(() => {})
-    },
-    // 获取权限
-    getPermissions () {
-      return this.$http.get('/sys/menu/permissions').then(({ data: res }) => {
-        if (res.code !== 0) {
-          return this.$message.error(res.msg)
-        }
-        window.SITE_CONFIG['permissions'] = res.data
       }).catch(() => {})
     }
   }

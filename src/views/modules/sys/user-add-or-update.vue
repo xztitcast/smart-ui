@@ -4,9 +4,6 @@
       <el-form-item prop="username" :label="$t('user.username')">
         <el-input v-model="dataForm.username" :placeholder="$t('user.username')"></el-input>
       </el-form-item>
-      <el-form-item prop="deptName" :label="$t('user.deptName')">
-        <ren-dept-tree v-model="dataForm.deptId" :placeholder="$t('dept.title')" :dept-name.sync="dataForm.deptName"></ren-dept-tree>
-      </el-form-item>
       <el-form-item prop="password" :label="$t('user.password')" :class="{ 'is-required': !dataForm.id }">
         <el-input v-model="dataForm.password" type="password" :placeholder="$t('user.password')"></el-input>
       </el-form-item>
@@ -15,9 +12,6 @@
       </el-form-item>
       <el-form-item prop="realName" :label="$t('user.realName')">
         <el-input v-model="dataForm.realName" :placeholder="$t('user.realName')"></el-input>
-      </el-form-item>
-      <el-form-item prop="gender" :label="$t('user.gender')">
-        <ren-radio-group v-model="dataForm.gender" dict-type="gender"></ren-radio-group>
       </el-form-item>
       <el-form-item prop="email" :label="$t('user.email')">
         <el-input v-model="dataForm.email" :placeholder="$t('user.email')"></el-input>
@@ -56,8 +50,6 @@ export default {
       dataForm: {
         id: '',
         username: '',
-        deptId: '',
-        deptName: '',
         password: '',
         confirmPassword: '',
         realName: '',
@@ -102,9 +94,6 @@ export default {
         username: [
           { required: true, message: this.$t('validate.required'), trigger: 'blur' }
         ],
-        deptName: [
-          { required: true, message: this.$t('validate.required'), trigger: 'change' }
-        ],
         password: [
           { validator: validatePassword, trigger: 'blur' }
         ],
@@ -126,7 +115,6 @@ export default {
   methods: {
     init () {
       this.visible = true
-      this.dataForm.deptId = ''
       this.$nextTick(() => {
         this.$refs['dataForm'].resetFields()
         this.roleIdListDefault = []
@@ -141,31 +129,33 @@ export default {
     },
     // 获取角色列表
     getRoleList () {
-      return this.$http.get('/sys/role/list').then(({ data: res }) => {
-        if (res.code !== 0) {
-          return this.$message.error(res.msg)
+      this.$http.get('/sys/role/list').then(({data}) => {
+        if(data && data.code === 0){
+          this.roleList = res.data
+        }else{
+          this.$message.error(res.msg)
         }
-        this.roleList = res.data
       }).catch(() => {})
     },
     // 获取信息
     getInfo () {
-      this.$http.get(`/sys/user/${this.dataForm.id}`).then(({ data: res }) => {
-        if (res.code !== 0) {
-          return this.$message.error(res.msg)
-        }
-        this.dataForm = {
-          ...this.dataForm,
-          ...res.data,
-          roleIdList: []
-        }
-        // 角色配置, 区分是否为默认角色
-        for (var i = 0; i < res.data.roleIdList.length; i++) {
-          if (this.roleList.filter(item => item.id === res.data.roleIdList[i])[0]) {
-            this.dataForm.roleIdList.push(res.data.roleIdList[i])
-            continue
+      this.$http.get(`/sys/user/${this.dataForm.id}`).then(({data}) => {
+        if(data && data.code === 0){
+          this.dataForm = {
+            ...this.dataForm,
+            ...res.data,
+            roleIdList: []
           }
-          this.roleIdListDefault.push(res.data.roleIdList[i])
+          // 角色配置, 区分是否为默认角色
+          for (var i = 0; i < res.data.roleIdList.length; i++) {
+            if (this.roleList.filter(item => item.id === res.data.roleIdList[i])[0]) {
+              this.dataForm.roleIdList.push(res.data.roleIdList[i])
+            }else{
+              this.roleIdListDefault.push(res.data.roleIdList[i])
+            }
+          }
+        }else{
+          this.$message.error(res.msg)
         }
       }).catch(() => {})
     },

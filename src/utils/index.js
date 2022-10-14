@@ -78,7 +78,7 @@ export function getIconList () {
  * @param {*} id
  * @param {*} pid
  */
-export function treeDataTranslate (data, id = 'id', pid = 'pid') {
+export function treeDataTranslate (data, id = 'id', pid = 'parentId') {
   var res = []
   var temp = {}
   for (var i = 0; i < data.length; i++) {

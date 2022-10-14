@@ -2,7 +2,7 @@
   <aside :class="['site-sidebar', `site-sidebar--${$store.state.sidebarLayoutSkin}`]">
     <div class="site-sidebar__inner">
       <el-menu
-        :default-active="$store.state.sidebarMenuActiveName"
+        :default-active="$store.state.sidebarMenuActiveName + ''"
         :collapse="$store.state.sidebarFold"
         :unique-opened="true"
         :collapseTransition="false"

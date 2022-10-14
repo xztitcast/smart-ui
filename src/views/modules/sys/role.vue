@@ -9,10 +9,10 @@
           <el-button @click="getDataList()">{{ $t('query') }}</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button v-if="$isAuth('sys:role:save')" type="primary" @click="addOrUpdateHandle()">{{ $t('add') }}</el-button>
+          <el-button v-if="isAuth('sys:role:save')" type="primary" @click="addOrUpdateHandle()">{{ $t('add') }}</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button v-if="$isAuth('sys:role:delete')" type="danger" @click="deleteHandle()">{{ $t('deleteBatch') }}</el-button>
+          <el-button v-if="isAuth('sys:role:delete')" type="danger" @click="deleteHandle()">{{ $t('deleteBatch') }}</el-button>
         </el-form-item>
       </el-form>
       <el-table
@@ -28,15 +28,15 @@
         <el-table-column prop="createDate" :label="$t('role.createDate')" sortable="custom" header-align="center" align="center" width="180"></el-table-column>
         <el-table-column :label="$t('handle')" fixed="right" header-align="center" align="center" width="150">
           <template slot-scope="scope">
-            <el-button v-if="$isAuth('sys:role:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">{{ $t('update') }}</el-button>
-            <el-button v-if="$isAuth('sys:role:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">{{ $t('delete') }}</el-button>
+            <el-button v-if="isAuth('sys:role:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">{{ $t('update') }}</el-button>
+            <el-button v-if="isAuth('sys:role:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">{{ $t('delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
-        :current-page="page"
+        :current-page="pageNum"
         :page-sizes="[10, 20, 50, 100]"
-        :page-size="limit"
+        :page-size="pageSize"
         :total="total"
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="pageSizeChangeHandle"
@@ -56,9 +56,9 @@ export default {
   data () {
     return {
       mixinViewModuleOptions: {
-        getDataListURL: '/sys/role/page',
+        getDataListURL: '/sys/role/list',
         getDataListIsPage: true,
-        deleteURL: '/sys/role',
+        deleteURL: '/sys/role/delete',
         deleteIsBatch: true
       },
       dataForm: {

@@ -54,15 +54,15 @@ export default {
             ...this.dataForm
           }
         }
-      ).then(({ data: res }) => {
+      ).then(({data}) => {
         this.dataListLoading = false
-        if (res.code !== 0) {
+        if(data && data.code === 0){
+          this.dataList = data.result.pageList
+          this.total = data.result.total
+        }else{
           this.dataList = []
           this.total = 0
-          return this.$message.error(res.msg)
         }
-        this.dataList = this.mixinViewModuleOptions.getDataListIsPage ? res.data.list : res.data
-        this.total = this.mixinViewModuleOptions.getDataListIsPage ? res.data.total : 0
       }).catch(() => {
         this.dataListLoading = false
       })
@@ -83,13 +83,13 @@ export default {
       this.query()
     },
     // 分页, 每页条数
-    pageNumSizeChangeHandle (val) {
+    pageSizeChangeHandle (val) {
       this.pageNum = 1
       this.pageSize = val
       this.query()
     },
     // 分页, 当前页
-    pageNumCurrentChangeHandle (val) {
+    pageCurrentChangeHandle (val) {
       this.pageNum = val
       this.query()
     },
