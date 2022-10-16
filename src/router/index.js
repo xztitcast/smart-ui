@@ -36,40 +36,18 @@ export const mainRoutes = {
   ]
 }
 
-export function addDynamicRoute (routeParams, router) {
-  // 组装路由名称, 并判断是否已添加, 如是: 则直接跳转
-  var routeName = routeParams.routeName
-  var dynamicRoute = window.SITE_CONFIG['dynamicRoutes'].filter(item => item.name === routeName)[0]
-  if (dynamicRoute) {
-    return router.push({ name: routeName, params: routeParams.params })
-  }
-  // 否则: 添加并全局变量保存, 再跳转
-  dynamicRoute = {
-    path: routeName,
-    component: () => import(`@/views/modules/${routeParams.path}`),
-    name: routeName,
-    meta: {
-      ...window.SITE_CONFIG['contentTabDefault'],
-      menuId: routeParams.menuId,
-      title: `${routeParams.title}`
-    }
-  }
-  router.addRoutes([
-    {
-      ...mainRoutes,
-      name: `main-dynamic__${dynamicRoute.name}`,
-      children: [dynamicRoute]
-    }
-  ])
-  window.SITE_CONFIG['dynamicRoutes'].push(dynamicRoute)
-  router.push({ name: dynamicRoute.name, params: routeParams.params })
-}
-
-const router = new Router({
+const createRouter = () => new Router({
   mode: 'hash',
   scrollBehavior: () => ({ y: 0 }),
   routes: globalRoutes.concat(mainRoutes)
 })
+
+const router = new createRouter()
+
+function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher
+}
 
 router.beforeEach((to, from, next) => {
   // 添加动态(菜单)路由
@@ -77,13 +55,7 @@ router.beforeEach((to, from, next) => {
   if (window.SITE_CONFIG['dynamicMenuRoutesHasAdded'] || fnCurrentRouteIsPageRoute(to, globalRoutes)) {
     return next()
   }
-  // 获取字典列表, 添加并全局变量保存
-  /*http.get('/sys/dict/type/all').then(({ data: res }) => {
-    if (res.code !== 0) {
-      return
-    }
-    window.SITE_CONFIG['dictList'] = res.data
-  }).catch(() => {})*/
+  resetRouter()
   // 获取菜单列表, 添加并全局变量保存
   http.get('/sys/menu/nav').then(({ data }) => {
     if(data && data.code === 0){
@@ -166,7 +138,6 @@ function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
     },
     { path: '*', redirect: { name: '404' } }
   ])
-  console.log(routes)
   window.SITE_CONFIG['dynamicMenuRoutes'] = routes
   window.SITE_CONFIG['dynamicMenuRoutesHasAdded'] = true
 }

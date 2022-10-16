@@ -84,12 +84,13 @@ export default {
         cancelButtonText: this.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        this.$http.post('/logout').then(({ data: res }) => {
-          if (res.code !== 0) {
-            return this.$message.error(res.msg)
+        this.$http.post('/sys/logout').then(({data}) => {
+          if(data && data.code ===0){
+            clearLoginInfo()
+            this.$router.replace({ name: 'login' })
+          }else{
+            this.$message.error(res.msg)
           }
-          clearLoginInfo()
-          this.$router.push({ name: 'login' })
         }).catch(() => {})
       }).catch(() => {})
     }

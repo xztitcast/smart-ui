@@ -153,14 +153,6 @@ t.oss.qcloudRegionHongkong = '香港'
 t.oss.qcloudRegionToronto = '多伦多'
 t.oss.qcloudRegionFrankfurt = '法兰克福'
 
-t.dept = {}
-t.dept.name = '名称'
-t.dept.parentName = '上级部门'
-t.dept.sort = '排序'
-t.dept.parentNameDefault = '一级部门'
-t.dept.chooseerror = '请选择部门'
-t.dept.title = '选择部门'
-
 t.dict = {}
 t.dict.dictName = '字典名称'
 t.dict.dictType = '字典类型'
@@ -170,41 +162,15 @@ t.dict.sort = '排序'
 t.dict.remark = '备注'
 t.dict.createDate = '创建时间'
 
-t.logError = {}
-t.logError.requestUri = '请求URI'
-t.logError.requestMethod = '请求方式'
-t.logError.requestParams = '请求参数'
-t.logError.ip = '操作IP'
-t.logError.userAgent = '用户代理'
-t.logError.createDate = '创建时间'
-t.logError.errorInfo = '异常信息'
 
-t.logLogin = {}
-t.logLogin.creatorName = '用户名'
-t.logLogin.status = '状态'
-t.logLogin.status0 = '失败'
-t.logLogin.status1 = '成功'
-t.logLogin.status2 = '账号已锁定'
-t.logLogin.operation = '操作类型'
-t.logLogin.operation0 = '登录'
-t.logLogin.operation1 = '退出'
-t.logLogin.ip = '操作IP'
-t.logLogin.userAgent = 'User-Agent'
-t.logLogin.createDate = '创建时间'
-
-t.logOperation = {}
-t.logOperation.status = '状态'
-t.logOperation.status0 = '失败'
-t.logOperation.status1 = '成功'
-t.logOperation.creatorName = '用户名'
-t.logOperation.operation = '用户操作'
-t.logOperation.requestUri = '请求URI'
-t.logOperation.requestMethod = '请求方式'
-t.logOperation.requestParams = '请求参数'
-t.logOperation.requestTime = '请求时长'
-t.logOperation.ip = '操作IP'
-t.logOperation.userAgent = 'User-Agent'
-t.logOperation.createDate = '创建时间'
+t.log = {}
+t.log.username = '用户名'
+t.log.operation = '操作'
+t.log.method = '方法'
+t.log.params = '参数'
+t.log.time = '执行时间'
+t.log.ip = '操作IP'
+t.log.created = '创建时间'
 
 t.menu = {}
 t.menu.name = '名称'
