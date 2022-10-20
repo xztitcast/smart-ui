@@ -26,7 +26,7 @@
         @sort-change="dataListSortChangeHandle"
         style="width: 100%;">
         <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-        <el-table-column prop="userId" label="ID" header-align="center" align="center"></el-table-column>
+        <el-table-column prop="id" label="ID" header-align="center" align="center"></el-table-column>
         <el-table-column prop="username" :label="$t('user.username')" sortable="custom" header-align="center" align="center"></el-table-column>
         <el-table-column prop="status" :label="$t('user.status')" sortable="custom" header-align="center" align="center">
           <template slot-scope="scope">

@@ -6,7 +6,7 @@
           <el-button v-if="isAuth('sys:menu:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         </el-form-item>
       </el-form>
-      <el-table border :data="dataList" row-key="menuId" style="width: 100%;">
+      <el-table border :data="dataList" row-key="id" style="width: 100%;">
         <el-table-column prop="name" header-align="center" min-width="150" label="名称" ></el-table-column>
         <el-table-column prop="parentName" header-align="center" align="center" width="120" label="上级菜单"></el-table-column>
         <el-table-column header-align="center" align="center" label="图标">
@@ -60,7 +60,7 @@ export default {
     getDataList () {
       this.dataListLoading = true
       this.$http.get('/sys/menu/list').then(({data}) => {
-        this.dataList = treeDataTranslate(data, 'menuId')
+        this.dataList = treeDataTranslate(data)
         this.dataListLoading = false
       })
     },

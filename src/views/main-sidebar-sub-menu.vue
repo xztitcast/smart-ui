@@ -1,12 +1,12 @@
 <template>
-  <el-submenu v-if="menu.list && menu.list.length >= 1" :index="menu.menuId + ''" :popper-append-to-body="false">
+  <el-submenu v-if="menu.list && menu.list.length >= 1" :index="menu.id + ''" :popper-append-to-body="false">
     <template slot="title">
       <svg class="icon-svg site-sidebar__menu-icon" aria-hidden="true"><use :xlink:href="`#${menu.icon}`"></use></svg>
       <span>{{ menu.name }}</span>
     </template>
-    <sub-menu v-for="item in menu.list" :key="item.menuId" :menu="item"></sub-menu>
+    <sub-menu v-for="item in menu.list" :key="item.id" :menu="item"></sub-menu>
   </el-submenu>
-  <el-menu-item v-else :index="menu.menuId + ''" @click="gotoRouteHandle(menu.menuId)">
+  <el-menu-item v-else :index="menu.id + ''" @click="gotoRouteHandle(menu.id)">
     <svg class="icon-svg site-sidebar__menu-icon" aria-hidden="true"><use :xlink:href="`#${menu.icon}`"></use></svg>
     <span>{{ menu.name }}</span>
   </el-menu-item>
@@ -26,9 +26,9 @@ export default {
     SubMenu
   },
   methods: {
-    // 通过menuId与动态(菜单)路由进行匹配跳转至指定路由
-    gotoRouteHandle (menuId) {
-      var route = window.SITE_CONFIG['dynamicMenuRoutes'].filter(item => item.meta.menuId === menuId)[0]
+    // 通过id与动态(菜单)路由进行匹配跳转至指定路由
+    gotoRouteHandle (id) {
+      var route = window.SITE_CONFIG['dynamicMenuRoutes'].filter(item => item.meta.id === id)[0]
       if (route) {
         this.$router.push({ name: route.name })
       }

@@ -7,32 +7,16 @@
       <el-form-item prop="remark" :label="$t('role.remark')">
         <el-input v-model="dataForm.remark" :placeholder="$t('role.remark')"></el-input>
       </el-form-item>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item size="mini" :label="$t('role.menuList')">
-            <el-tree
-              :data="menuList"
-              :props="{ label: 'name', children: 'children' }"
-              node-key="id"
-              ref="menuListTree"
-              accordion
-              show-checkbox>
-            </el-tree>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item size="mini" :label="$t('role.deptList')">
-            <el-tree
-              :data="deptList"
-              :props="{ label: 'name', children: 'children' }"
-              node-key="id"
-              ref="deptListTree"
-              accordion
-              show-checkbox>
-            </el-tree>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <el-form-item size="mini" :label="$t('role.menuList')">
+        <el-tree
+          :data="menuList"
+          :props="{ label: 'name', children: 'children' }"
+          node-key="id"
+          ref="menuListTree"
+          accordion
+          show-checkbox>
+        </el-tree>
+      </el-form-item>
     </el-form>
     <template slot="footer">
       <el-button @click="visible = false">{{ $t('cancel') }}</el-button>
@@ -43,17 +27,16 @@
 
 <script>
 import debounce from 'lodash/debounce'
+import { treeDataTranslate } from '@/utils'
 export default {
   data () {
     return {
       visible: false,
       menuList: [],
-      deptList: [],
       dataForm: {
         id: '',
         name: '',
         menuIdList: [],
-        deptIdList: [],
         remark: ''
       }
     }
@@ -73,10 +56,8 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].resetFields()
         this.$refs.menuListTree.setCheckedKeys([])
-        this.$refs.deptListTree.setCheckedKeys([])
         Promise.all([
-          this.getMenuList(),
-          this.getDeptList()
+          this.getMenuList()
         ]).then(() => {
           if (this.dataForm.id) {
             this.getInfo()
@@ -86,34 +67,22 @@ export default {
     },
     // 获取菜单列表
     getMenuList () {
-      return this.$http.get('/sys/menu/select').then(({ data: res }) => {
-        if (res.code !== 0) {
-          return this.$message.error(res.msg)
-        }
-        this.menuList = res.data
-      }).catch(() => {})
-    },
-    // 获取部门列表
-    getDeptList () {
-      return this.$http.get('/sys/dept/list').then(({ data: res }) => {
-        if (res.code !== 0) {
-          return this.$message.error(res.msg)
-        }
-        this.deptList = res.data
+      return this.$http.get('/sys/menu/list').then(({data}) => {
+        this.menuList = treeDataTranslate(data)
       }).catch(() => {})
     },
     // 获取信息
     getInfo () {
-      this.$http.get(`/sys/role/${this.dataForm.id}`).then(({ data: res }) => {
-        if (res.code !== 0) {
-          return this.$message.error(res.msg)
+      this.$http.get(`/sys/role/info/${this.dataForm.id}`).then(({data}) => {
+        if(data && data.code === 0){
+          this.dataForm = {
+            ...this.dataForm,
+            ...data.result
+          }
+          this.dataForm.menuIdList.forEach(item => this.$refs.menuListTree.setChecked(item, true))
+        }else{
+          this.$message.error(data.msg)
         }
-        this.dataForm = {
-          ...this.dataForm,
-          ...res.data
-        }
-        this.dataForm.menuIdList.forEach(item => this.$refs.menuListTree.setChecked(item, true))
-        this.$refs.deptListTree.setCheckedKeys(this.dataForm.deptIdList)
       }).catch(() => {})
     },
     // 表单提交
@@ -126,20 +95,20 @@ export default {
           ...this.$refs.menuListTree.getHalfCheckedKeys(),
           ...this.$refs.menuListTree.getCheckedKeys()
         ]
-        this.dataForm.deptIdList = this.$refs.deptListTree.getCheckedKeys()
-        this.$http[!this.dataForm.id ? 'post' : 'put']('/sys/role', this.dataForm).then(({ data: res }) => {
-          if (res.code !== 0) {
-            return this.$message.error(res.msg)
+        this.$http.post('/sys/role/saveOrUpdate', this.dataForm).then(({data}) => {
+          if(data && data.code === 0){
+            this.$message({
+              message: this.$t('prompt.success'),
+              type: 'success',
+              duration: 500,
+              onClose: () => {
+                this.visible = false
+                this.$emit('refreshDataList')
+              }
+            })
+          }else{
+            this.$message.error(res.msg)
           }
-          this.$message({
-            message: this.$t('prompt.success'),
-            type: 'success',
-            duration: 500,
-            onClose: () => {
-              this.visible = false
-              this.$emit('refreshDataList')
-            }
-          })
         }).catch(() => {})
       })
     }, 1000, { 'leading': true, 'trailing': false })

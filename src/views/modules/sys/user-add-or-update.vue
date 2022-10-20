@@ -10,15 +10,6 @@
       <el-form-item prop="confirmPassword" :label="$t('user.confirmPassword')" :class="{ 'is-required': !dataForm.id }">
         <el-input v-model="dataForm.confirmPassword" type="password" :placeholder="$t('user.confirmPassword')"></el-input>
       </el-form-item>
-      <el-form-item prop="realName" :label="$t('user.realName')">
-        <el-input v-model="dataForm.realName" :placeholder="$t('user.realName')"></el-input>
-      </el-form-item>
-      <el-form-item prop="email" :label="$t('user.email')">
-        <el-input v-model="dataForm.email" :placeholder="$t('user.email')"></el-input>
-      </el-form-item>
-      <el-form-item prop="mobile" :label="$t('user.mobile')">
-        <el-input v-model="dataForm.mobile" :placeholder="$t('user.mobile')"></el-input>
-      </el-form-item>
       <el-form-item prop="roleIdList" :label="$t('user.roleIdList')" class="role-list">
         <el-select v-model="dataForm.roleIdList" multiple :placeholder="$t('user.roleIdList')">
           <el-option v-for="role in roleList" :key="role.id" :label="role.name" :value="role.id"></el-option>
@@ -40,7 +31,6 @@
 
 <script>
 import debounce from 'lodash/debounce'
-import { isEmail, isMobile } from '@/utils/validate'
 export default {
   data () {
     return {
@@ -52,10 +42,6 @@ export default {
         username: '',
         password: '',
         confirmPassword: '',
-        realName: '',
-        gender: 0,
-        email: '',
-        mobile: '',
         roleIdList: [],
         status: 1
       }
@@ -78,18 +64,6 @@ export default {
         }
         callback()
       }
-      var validateEmail = (rule, value, callback) => {
-        if (value && !isEmail(value)) {
-          return callback(new Error(this.$t('validate.format', { 'attr': this.$t('user.email') })))
-        }
-        callback()
-      }
-      var validateMobile = (rule, value, callback) => {
-        if (value && !isMobile(value)) {
-          return callback(new Error(this.$t('validate.format', { 'attr': this.$t('user.mobile') })))
-        }
-        callback()
-      }
       return {
         username: [
           { required: true, message: this.$t('validate.required'), trigger: 'blur' }
@@ -99,15 +73,6 @@ export default {
         ],
         confirmPassword: [
           { validator: validateConfirmPassword, trigger: 'blur' }
-        ],
-        realName: [
-          { required: true, message: this.$t('validate.required'), trigger: 'blur' }
-        ],
-        email: [
-          { validator: validateEmail, trigger: 'blur' }
-        ],
-        mobile: [
-          { validator: validateMobile, trigger: 'blur' }
         ]
       }
     }
@@ -129,33 +94,33 @@ export default {
     },
     // 获取角色列表
     getRoleList () {
-      this.$http.get('/sys/role/list').then(({data}) => {
+      this.$http.get('/sys/role/select').then(({data}) => {
         if(data && data.code === 0){
-          this.roleList = res.data
+          this.roleList = data.result
         }else{
-          this.$message.error(res.msg)
+          this.$message.error(data.msg)
         }
       }).catch(() => {})
     },
     // 获取信息
     getInfo () {
-      this.$http.get(`/sys/user/${this.dataForm.id}`).then(({data}) => {
+      this.$http.get(`/sys/user/info/${this.dataForm.id}`).then(({data}) => {
         if(data && data.code === 0){
           this.dataForm = {
             ...this.dataForm,
-            ...res.data,
+            ...data.result,
             roleIdList: []
           }
           // 角色配置, 区分是否为默认角色
-          for (var i = 0; i < res.data.roleIdList.length; i++) {
-            if (this.roleList.filter(item => item.id === res.data.roleIdList[i])[0]) {
-              this.dataForm.roleIdList.push(res.data.roleIdList[i])
+          for (var i = 0; i < data.result.roleIdList.length; i++) {
+            if (this.roleList.filter(item => item.id === data.result.roleIdList[i])[0]) {
+              this.dataForm.roleIdList.push(data.result.roleIdList[i])
             }else{
-              this.roleIdListDefault.push(res.data.roleIdList[i])
+              this.roleIdListDefault.push(data.result.roleIdList[i])
             }
           }
         }else{
-          this.$message.error(res.msg)
+          this.$message.error(data.msg)
         }
       }).catch(() => {})
     },
@@ -165,25 +130,26 @@ export default {
         if (!valid) {
           return false
         }
-        this.$http[!this.dataForm.id ? 'post' : 'put']('/sys/user', {
+        this.$http.post(`/sys/user/${!this.dataForm.id ? 'save' : 'update'}`, {
           ...this.dataForm,
           roleIdList: [
             ...this.dataForm.roleIdList,
             ...this.roleIdListDefault
           ]
-        }).then(({ data: res }) => {
-          if (res.code !== 0) {
-            return this.$message.error(res.msg)
+        }).then(({data}) => {
+          if(data && data.code === 0){
+            this.$message({
+              message: this.$t('prompt.success'),
+              type: 'success',
+              duration: 500,
+              onClose: () => {
+                this.visible = false
+                this.$emit('refreshDataList')
+              }
+            })
+          }else{
+            this.$message.error(data.msg)
           }
-          this.$message({
-            message: this.$t('prompt.success'),
-            type: 'success',
-            duration: 500,
-            onClose: () => {
-              this.visible = false
-              this.$emit('refreshDataList')
-            }
-          })
         }).catch(() => {})
       })
     }, 1000, { 'leading': true, 'trailing': false })

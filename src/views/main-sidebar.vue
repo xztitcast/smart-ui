@@ -7,7 +7,7 @@
         :unique-opened="true"
         :collapseTransition="false"
         class="site-sidebar__menu">
-        <sub-menu v-for="menu in $store.state.sidebarMenuList" :key="menu.menuId" :menu="menu" />
+        <sub-menu v-for="menu in $store.state.sidebarMenuList" :key="menu.id" :menu="menu" />
       </el-menu>
     </div>
   </aside>
