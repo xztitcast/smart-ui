@@ -19,9 +19,9 @@
         </el-form-item>
       </el-form>
       <el-table
-        v-loading="dataListLoading"
-        :data="dataList"
         border
+        :data="dataList"
+        v-loading="dataListLoading"
         @selection-change="dataListSelectionChangeHandle"
         @sort-change="dataListSortChangeHandle"
         style="width: 100%;">
@@ -30,8 +30,8 @@
         <el-table-column prop="username" :label="$t('user.username')" sortable="custom" header-align="center" align="center"></el-table-column>
         <el-table-column prop="status" :label="$t('user.status')" sortable="custom" header-align="center" align="center">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.status === 0" size="small" type="danger">{{ $t('user.status0') }}</el-tag>
-            <el-tag v-else size="small" type="success">{{ $t('user.status1') }}</el-tag>
+            <el-tag v-if="scope.row.status === 0" size="small" type="success">{{ $t('user.status0') }}</el-tag>
+            <el-tag v-else size="small" type="danger">{{ $t('user.status1') }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="created" :label="$t('user.created')" sortable="custom" header-align="center" align="center" width="180"></el-table-column>
@@ -43,10 +43,10 @@
         </el-table-column>
       </el-table>
       <el-pagination
+        :total="total"
+        :page-size="pageSize"
         :current-page="pageNum"
         :page-sizes="[10, 20, 50, 100]"
-        :page-size="pageSize"
-        :total="total"
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="pageSizeChangeHandle"
         @current-change="pageCurrentChangeHandle">

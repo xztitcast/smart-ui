@@ -16,16 +16,16 @@
         </el-form-item>
       </el-form>
       <el-table
-        v-loading="dataListLoading"
-        :data="dataList"
         border
+        :data="dataList"
+        v-loading="dataListLoading"
         @selection-change="dataListSelectionChangeHandle"
         @sort-change="dataListSortChangeHandle"
         style="width: 100%;">
         <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
         <el-table-column prop="name" :label="$t('role.name')" header-align="center" align="center"></el-table-column>
         <el-table-column prop="remark" :label="$t('role.remark')" header-align="center" align="center"></el-table-column>
-        <el-table-column prop="createDate" :label="$t('role.createDate')" sortable="custom" header-align="center" align="center" width="180"></el-table-column>
+        <el-table-column prop="created" :label="$t('role.created')" sortable="custom" header-align="center" align="center" width="180"></el-table-column>
         <el-table-column :label="$t('handle')" fixed="right" header-align="center" align="center" width="150">
           <template slot-scope="scope">
             <el-button v-if="isAuth('sys:role:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">{{ $t('update') }}</el-button>
@@ -34,10 +34,10 @@
         </el-table-column>
       </el-table>
       <el-pagination
+        :total="total"
+        :page-size="pageSize"
         :current-page="pageNum"
         :page-sizes="[10, 20, 50, 100]"
-        :page-size="pageSize"
-        :total="total"
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="pageSizeChangeHandle"
         @current-change="pageCurrentChangeHandle">

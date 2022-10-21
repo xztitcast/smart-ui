@@ -43,7 +43,7 @@ export default {
         password: '',
         confirmPassword: '',
         roleIdList: [],
-        status: 1
+        status: 0
       }
     }
   },
