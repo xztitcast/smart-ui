@@ -99,8 +99,8 @@ function fnCurrentRouteIsPageRoute (route, globalRoutes = []) {
 function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
   var temp = []
   for (var i = 0; i < menuList.length; i++) {
-    if (menuList[i].list && menuList[i].list.length >= 1) {
-      temp = temp.concat(menuList[i].list)
+    if (menuList[i].children && menuList[i].children.length >= 1) {
+      temp = temp.concat(menuList[i].children)
       continue
     }
     // 组装路由

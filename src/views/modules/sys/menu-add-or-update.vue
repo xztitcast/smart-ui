@@ -60,7 +60,7 @@
 
 <script>
 import debounce from 'lodash/debounce'
-import { getIconList, treeDataTranslate } from '@/utils'
+import { getIconList } from '@/utils'
 export default {
   data () {
     return {
@@ -101,9 +101,8 @@ export default {
     }
   },
   methods: {
-    init (id) {
+    init () {
       this.visible = true
-      this.dataForm.id = id || 0
       this.$nextTick(() => {
         this.$refs['dataForm'].resetFields()
         this.iconList = getIconList()
@@ -119,7 +118,7 @@ export default {
     getMenuList () {
       return this.$http.get('/sys/menu/select').then(({data}) => {
         if(data && data.code === 0){
-          this.menuList = treeDataTranslate(data.menuList)
+          this.menuList = data.result
         }else{
           this.$message.error(data.msg)
         }
@@ -127,7 +126,7 @@ export default {
     },
     // 获取信息
     getInfo () {
-      this.$http.get(`/sys/menu/${this.dataForm.id}`).then(({data}) => {
+      this.$http.get(`/sys/menu/info/${this.dataForm.id}`).then(({data}) => {
         console.log(this.dataForm.id)
         if(data && data.code === 0){
           this.dataForm = {

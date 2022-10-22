@@ -68,7 +68,11 @@ export default {
     // 获取菜单列表
     getMenuList () {
       return this.$http.get('/sys/menu/list').then(({data}) => {
-        this.menuList = treeDataTranslate(data)
+        if(data && data.code === 0){
+          this.menuList = data.result
+        }else{
+          this.$message.error(data.msg)
+        }
       }).catch(() => {})
     },
     // 获取信息

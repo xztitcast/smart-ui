@@ -57,8 +57,8 @@ export default {
       ).then(({data}) => {
         this.dataListLoading = false
         if(data && data.code === 0){
-          this.dataList = data.result.pageList
-          this.total = data.result.total
+          this.dataList = this.mixinViewModuleOptions.getDataListIsPage ? data.result.pageList : data.result 
+          this.total = this.mixinViewModuleOptions.getDataListIsPage ? data.result.total : 0
         }else{
           this.dataList = []
           this.total = 0
@@ -136,18 +136,19 @@ export default {
           this.mixinViewModuleOptions.deleteIsBatch ? {
             'data': id ? [id] : this.dataListSelections.map(item => item[this.mixinViewModuleOptions.deleteIsBatchKey])
           } : {}
-        ).then(({ data: res }) => {
-          if (res.code !== 0) {
-            return this.$message.error(res.msg)
+        ).then(({data }) => {
+          if(data && data.code === 0){
+            this.$message({
+              message: this.$t('prompt.success'),
+              type: 'success',
+              duration: 500,
+              onClose: () => {
+                this.query()
+              }
+            })
+          }else{
+            this.$message.error(data.msg)
           }
-          this.$message({
-            message: this.$t('prompt.success'),
-            type: 'success',
-            duration: 500,
-            onClose: () => {
-              this.query()
-            }
-          })
         }).catch(() => {})
       }).catch(() => {})
     },
