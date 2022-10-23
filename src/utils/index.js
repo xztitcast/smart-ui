@@ -73,7 +73,7 @@ export function getIconList () {
 }
 
 /**
- * 树形数据转换
+ * 树形数据转换(已迁移后端返回)
  * @param {*} data
  * @param {*} id
  * @param {*} pid

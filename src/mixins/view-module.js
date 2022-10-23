@@ -78,7 +78,8 @@ export default {
         this.orderField = ''
         return false
       }
-      this.order = data.order.replace(/ending$/, '')
+      console.log(data)
+      this.order = data.order.replace(/ending$/, '') === 'asc'
       this.orderField = data.prop.replace(/([A-Z])/g, '_$1').toLowerCase()
       this.query()
     },
@@ -136,7 +137,7 @@ export default {
           this.mixinViewModuleOptions.deleteIsBatch ? {
             'data': id ? [id] : this.dataListSelections.map(item => item[this.mixinViewModuleOptions.deleteIsBatchKey])
           } : {}
-        ).then(({data }) => {
+        ).then(({data}) => {
           if(data && data.code === 0){
             this.$message({
               message: this.$t('prompt.success'),

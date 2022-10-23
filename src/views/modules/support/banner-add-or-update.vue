@@ -10,7 +10,7 @@
       label-position="right"
       :model="dataForm"
       :rules="dataRule"
-      @keyup.enter.native="dataFormSubmit()">
+      @keyup.enter.native="dataFormSubmitHandle()">
       <el-form-item label="banner图片" prop="url">
          <el-upload
           ref="bannerUploadForm"
@@ -40,7 +40,7 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+      <el-button type="primary" @click="dataFormSubmitHandle()">确定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -67,23 +67,20 @@
       }
     },
     methods: {
-      init (id) {
+      init () {
         this.visible = true
-        this.dataForm.id = id || 0
         this.upload.header['token'] = this.$cookie.get('token')
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
           if (this.dataForm.id) {
-            this.$http({
-              url: `/sys/banner/info/${this.dataForm.id}`,
-              method: 'get',
-              params: this.$http.params()
-            }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.dataForm.url = data.result.url
-                this.dataForm.content = data.result.content
-                this.dataForm.isShow = data.result.isShow
-                this.dataForm.sorted = data.result.sorted
+            this.$http.get(`/sys/banner/info/${this.dataForm.id}`).then(({data}) => {
+              if(data && data.code === 0){
+                this.dataForm = {
+                ...this.dataForm,
+                ...data.result,
+                }
+              }else{
+                this.$message.error(data.msg)
               }
             })
           }
@@ -124,25 +121,15 @@
         this.$refs['bannerUploadForm'].clearFiles()
       },
       // 表单提交
-      dataFormSubmit () {
+      dataFormSubmitHandle () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            this.$http({
-              url: '/sys/banner/saveOrUpdate',
-              method: 'post',
-              data: this.$http.JSON({
-                'id': this.dataForm.id || null,
-                'url': this.dataForm.url,
-                'content': this.dataForm.content,
-                'isShow': this.dataForm.isShow,
-                'sorted': this.dataForm.sorted
-              })
-            }).then(({data}) => {
+            this.$http.post('/sys/banner/saveOrUpdate', this.dataForm).then(({data}) => {
               if (data && data.code === 0) {
                 this.$message({
-                  message: '操作成功',
+                  message: this.$t('prompt.success'),
                   type: 'success',
-                  duration: 1500,
+                  duration: 500,
                   onClose: () => {
                     this.visible = false
                     this.$emit('refreshDataList')

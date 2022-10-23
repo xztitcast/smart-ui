@@ -30,14 +30,22 @@
         <el-table-column prop="username" :label="$t('user.username')" sortable="custom" header-align="center" align="center"></el-table-column>
         <el-table-column prop="status" :label="$t('user.status')" sortable="custom" header-align="center" align="center">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.status === 0" size="small" type="success">{{ $t('user.status0') }}</el-tag>
-            <el-tag v-else size="small" type="danger">{{ $t('user.status1') }}</el-tag>
+            <el-switch 
+              v-model="scope.row.status" 
+              style="display: block" 
+              :active-value="0" 
+              :inactive-value="1" 
+              active-color="#13ce66" 
+              inactive-color="#ff4949" 
+              :active-text="$t('user.status0')" 
+              :inactive-text="$t('user.status1')"
+              @change="statusSwitchChangeEvent($event, scope.row.id)">
+            </el-switch>
           </template>
         </el-table-column>
         <el-table-column prop="created" :label="$t('user.created')" sortable="custom" header-align="center" align="center" width="180"></el-table-column>
         <el-table-column :label="$t('handle')" fixed="right" header-align="center" align="center" width="150">
           <template slot-scope="scope">
-            <el-button v-if="isAuth('sys:user:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">{{ $t('update') }}</el-button>
             <el-button v-if="isAuth('sys:user:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">{{ $t('delete') }}</el-button>
           </template>
         </el-table-column>
@@ -78,6 +86,18 @@ export default {
   },
   components: {
     AddOrUpdate
+  },
+  methods: {
+    statusSwitchChangeEvent(val, id){
+      this.$http.get(`/sys/user/status/${id}`, {params: {'value': val == 1}}).then(({data}) => {
+        if(data && data.code === 0){
+          this.getDataList()
+          this.$message.success('操作成功!')
+        }else{
+          this.$message.error(data.msg)
+        }
+      })
+    }
   }
 }
 </script>

@@ -75,20 +75,21 @@ export default {
         if (!valid) {
           return false
         }
-        this.$http.put('/sys/user/password', this.dataForm).then(({ data: res }) => {
-          if (res.code !== 0) {
-            return this.$message.error(res.msg)
+        this.$http.put('/sys/user/password', this.dataForm).then(({data}) => {
+          if(data && data.code === 0){
+            this.$message({
+              message: this.$t('prompt.success'),
+              type: 'success',
+              duration: 500,
+              onClose: () => {
+                this.visible = false
+                clearLoginInfo()
+                this.$router.replace({ name: 'login' })
+              }
+            })
+          }else {
+            this.$message.error(res.msg)
           }
-          this.$message({
-            message: this.$t('prompt.success'),
-            type: 'success',
-            duration: 500,
-            onClose: () => {
-              this.visible = false
-              clearLoginInfo()
-              this.$router.replace({ name: 'login' })
-            }
-          })
         }).catch(() => {})
       })
     }, 1000, { 'leading': true, 'trailing': false })

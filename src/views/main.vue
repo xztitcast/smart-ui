@@ -78,13 +78,14 @@ export default {
     },
     // 获取当前管理员信息
     getUserInfo () {
-      return this.$http.get('/sys/user/info').then(({ data: res }) => {
-        if (res.code !== 0) {
-          return this.$message.error(res.msg)
+      return this.$http.get('/sys/user/info').then(({data}) => {
+        if(data && data.code === 0){
+          this.$store.state.user.id = data.result.id
+          this.$store.state.user.name = data.result.username
+          this.$store.state.user.superAdmin = data.result.superAdmin
+        }else{
+          this.$message.error(res.msg)
         }
-        this.$store.state.user.id = res.data.id
-        this.$store.state.user.name = res.data.username
-        this.$store.state.user.superAdmin = res.data.superAdmin
       }).catch(() => {})
     }
   }

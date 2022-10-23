@@ -8,7 +8,7 @@ import '@/icons'
 import '@/element-ui/theme/index.css'
 import '@/assets/scss/index.scss'
 import http from '@/utils/request'
-import { isAuth, getDictLabel } from '@/utils'
+import { isAuth } from '@/utils'
 import cloneDeep from 'lodash/cloneDeep'
 
 Vue.config.productionTip = false
@@ -21,7 +21,6 @@ Vue.use(Element, {
 // 挂载全局
 Vue.prototype.$http = http
 Vue.prototype.isAuth = isAuth
-Vue.prototype.$getDictLabel = getDictLabel
 
 // 保存整站vuex本地储存初始状态
 window.SITE_CONFIG['storeState'] = cloneDeep(store.state)
