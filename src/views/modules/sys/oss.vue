@@ -1,13 +1,20 @@
 <template>
-  <div class="mod-dict">
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+  <div class="mod-oss">
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()"> 
       <el-form-item>
-        <el-input v-model="dataForm.paramKey" placeholder="参数（Key）键" clearable></el-input>
+        <el-select v-model="dataForm.name" placeholder="请选择存储商">
+          <el-option :value="1" label="阿里云"></el-option>
+          <el-option :value="2" label="腾讯云"></el-option>
+          <el-option :value="3" label="七牛云"></el-option>
+          <el-option :value="4" label="华为云"></el-option>
+          <el-option :value="5" label="百度云"></el-option>
+          <el-option :value="5" label="百度云"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('sys:dict:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('sys:dict:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -31,34 +38,53 @@
         label="ID">
       </el-table-column>
       <el-table-column
-        prop="paramKey"
+        prop="name"
         header-align="center"
         align="center"
-        label="参数（Key）键">
+        label="存储商">
       </el-table-column>
       <el-table-column
-        prop="paramName"
+        prop="domain"
         header-align="center"
         align="center"
-        label="参数（Name）名称">
+        label="域名"
+        show-overflow-tooltip>
       </el-table-column>
       <el-table-column
-        prop="paramVal"
+        prop="point"
         header-align="center"
         align="center"
-        label="参数（Value）值">
+        label="端点">
+      </el-table-column>
+      <el-table-column
+        prop="bucket"
+        header-align="center"
+        align="center"
+        label="桶">
+      </el-table-column>
+      <el-table-column
+        prop="prefix"
+        header-align="center"
+        align="center"
+        label="目录">
+      </el-table-column>
+      <el-table-column
+        prop="accessKey"
+        header-align="center"
+        align="center"
+        label="KEY">
+      </el-table-column>
+      <el-table-column
+        prop="secretKey"
+        header-align="center"
+        align="center"
+        label="SECRET">
       </el-table-column>
       <el-table-column
         prop="created"
         header-align="center"
         align="center"
         label="创建时间">
-      </el-table-column>
-      <el-table-column
-        prop="remark"
-        header-align="center"
-        align="center"
-        label="备注">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -88,19 +114,19 @@
 
 <script>
   import mixinViewModule from '@/mixins/view-module'
-  import AddOrUpdate from './dict-add-or-update'
+  import AddOrUpdate from './oss-add-or-update'
   export default {
     mixins: [mixinViewModule],
     data () {
       return {
         mixinViewModuleOptions: {
-        getDataListURL: '/sys/dict/list',
-        getDataListIsPage: true,
-        deleteURL: '/sys/dict/delete',
-        deleteIsBatch: true,
+          getDataListURL: '/sys/oss/list',
+          getDataListIsPage: true,
+          deleteURL: '/sys/oss/delete',
+          deleteIsBatch: true
         },
         dataForm: {
-          paramKey: ''
+          name: ''
         }
       }
     },

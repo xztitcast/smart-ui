@@ -1,9 +1,13 @@
 <template>
-  <div class="mod-banner">
-    <el-form :inline="true" :model="dataForm">
-        <el-form-item>
-          <el-button v-if="isAuth('sys:banner:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-          <el-button v-if="isAuth('sys:banner:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+  <div class="mod-dict">
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+      <el-form-item>
+        <el-input v-model="dataForm.paramKey" placeholder="参数（Key）键" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="getDataList()">查询</el-button>
+        <el-button v-if="isAuth('sys:dict:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('sys:dict:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -20,37 +24,23 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="url"
+        prop="id"
         header-align="center"
         align="center"
-        label="banner图片">
-        <template slot-scope="scope">
-          <div>
-            <img :src="scope.row.url" width="120">
-          </div>
-        </template>
+        width="80"
+        label="ID">
       </el-table-column>
       <el-table-column
-        prop="content"
+        prop="key"
         header-align="center"
         align="center"
-        label="图片内容">
+        label="参数（Key）键">
       </el-table-column>
       <el-table-column
-        prop="isShow"
+        prop="value"
         header-align="center"
         align="center"
-        label="是否展示">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.isShow">是</el-tag>
-          <el-tag v-else>否</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="sorted"
-        header-align="center"
-        align="center"
-        label="排序">
+        label="参数（Value）值">
       </el-table-column>
       <el-table-column
         prop="created"
@@ -59,14 +49,20 @@
         label="创建时间">
       </el-table-column>
       <el-table-column
+        prop="remark"
+        header-align="center"
+        align="center"
+        label="备注">
+      </el-table-column>
+      <el-table-column
         fixed="right"
         header-align="center"
         align="center"
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button v-if="isAuth('sys:banner:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button v-if="isAuth('sys:banner:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -79,22 +75,26 @@
       @size-change="pageSizeChangeHandle"
       @current-change="pageCurrentChangeHandle">
     </el-pagination>
+    <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
 </template>
 
 <script>
   import mixinViewModule from '@/mixins/view-module'
-  import AddOrUpdate from './banner-add-or-update'
+  import AddOrUpdate from './dict-add-or-update'
   export default {
     mixins: [mixinViewModule],
     data () {
       return {
         mixinViewModuleOptions: {
-        getDataListURL: '/sys/banner/list',
+        getDataListURL: '/sys/dict/list',
         getDataListIsPage: true,
-        deleteURL: '/sys/banner/delete',
-        deleteIsBatch: true
+        deleteURL: '/sys/dict/delete',
+        deleteIsBatch: true,
+        },
+        dataForm: {
+          key: ''
         }
       }
     },

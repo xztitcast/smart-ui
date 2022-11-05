@@ -127,30 +127,29 @@ export default {
     // 表单提交
     dataFormSubmitHandle: debounce(function () {
       this.$refs['dataForm'].validate((valid) => {
-        if (!valid) {
-          return false
+        if (valid) {
+          this.$http.post('/sys/user/save', {
+            ...this.dataForm,
+            roleIdList: [
+              ...this.dataForm.roleIdList,
+              ...this.roleIdListDefault
+            ]
+          }).then(({data}) => {
+            if(data && data.code === 0){
+              this.$message({
+                message: this.$t('prompt.success'),
+                type: 'success',
+                duration: 500,
+                onClose: () => {
+                  this.visible = false
+                  this.$emit('refreshDataList')
+                }
+              })
+            }else{
+              this.$message.error(data.msg)
+            }
+          }).catch(() => {})
         }
-        this.$http.post(`/sys/user/${!this.dataForm.id ? 'save' : 'update'}`, {
-          ...this.dataForm,
-          roleIdList: [
-            ...this.dataForm.roleIdList,
-            ...this.roleIdListDefault
-          ]
-        }).then(({data}) => {
-          if(data && data.code === 0){
-            this.$message({
-              message: this.$t('prompt.success'),
-              type: 'success',
-              duration: 500,
-              onClose: () => {
-                this.visible = false
-                this.$emit('refreshDataList')
-              }
-            })
-          }else{
-            this.$message.error(data.msg)
-          }
-        }).catch(() => {})
       })
     }, 1000, { 'leading': true, 'trailing': false })
   }

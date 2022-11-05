@@ -34,12 +34,13 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+      <el-button type="primary" @click="dataFormSubmitHandle()">确定</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
+  import debounce from 'lodash/debounce'
   export default {
     data () {
       return {
@@ -77,65 +78,52 @@
       }
     },
     methods: {
-      init (id) {
-        this.dataForm.id = id || 0
+      init () {
         this.visible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
           if (this.dataForm.id) {
-            this.$http({
-              url: `/sys/oss/info/${this.dataForm.id}`,
-              method: 'get',
-              params: this.$http.params()
-            }).then(({data}) => {
-              if (data && data.code === 0) {//如没有配置HTTPS accessKey与secretKey请加密
-                this.dataForm.name = data.result.name
-                this.dataForm.domain = data.result.domain
-                this.dataForm.point = data.result.point
-                this.dataForm.bucket = data.result.bucket
-                this.dataForm.prefix = data.result.prefix
-                this.dataForm.accessKey = data.result.accessKey
-                this.dataForm.secretKey = data.result.secretKey
-              }
-            })
+            this.getInfo()
+          }
+        })
+      },
+      getInfo(){
+        this.$http.get(`/sys/oss/info/${this.dataForm.id}`).then(({data}) => {
+          if (data && data.code === 0) {//如没有配置HTTPS accessKey与secretKey请加密
+            this.dataForm.name = data.result.name
+            this.dataForm.domain = data.result.domain
+            this.dataForm.point = data.result.point
+            this.dataForm.bucket = data.result.bucket
+            this.dataForm.prefix = data.result.prefix
+            this.dataForm.accessKey = data.result.accessKey
+            this.dataForm.secretKey = data.result.secretKey
           }
         })
       },
       // 表单提交
-      dataFormSubmit () {
+      dataFormSubmitHandle: debounce(function() {
         this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
-            this.$http({
-              url: '/sys/oss/saveOrUpdate',
-              method: 'post',
-              data: this.$http.JSON({ //如没有配置HTTPS accessKey与secretKey请加密
-                'id': this.dataForm.id || null,
-                'name': this.dataForm.name,
-                'domain': this.dataForm.domain,
-                'point': this.dataForm.point,
-                'bucket': this.dataForm.bucket,
-                'prefix': this.dataForm.prefix,
-                'accessKey': this.dataForm.accessKey,
-                'secretKey': this.dataForm.secretKey
-              })
+          if(valid) {
+            this.$http.post('/sys/oss/saveOrUpdate',{
+              ...this.dataForm
             }).then(({data}) => {
-              if (data && data.code === 0) {
+              if(data && data.code === 0){
                 this.$message({
-                  message: '操作成功',
+                  message: this.$t('prompt.success'),
                   type: 'success',
-                  duration: 1500,
+                  duration: 500,
                   onClose: () => {
                     this.visible = false
                     this.$emit('refreshDataList')
                   }
                 })
-              } else {
+              }else{
                 this.$message.error(data.msg)
               }
             })
           }
         })
-      }  
+      }, 1000, { 'leading': true, 'trailing': false })
     }
   }
 </script>

@@ -32,7 +32,7 @@ export const mainRoutes = {
   redirect: { name: 'home' },
   meta: { title: '主入口布局' },
   children: [
-    { path: '/home', component: () => import('@/views/global/home'), name: 'home', meta: { title: '首页', isTab: true } }
+    { path: '/home', component: () => import('@/views/modules/home'), name: 'home', meta: { title: '首页', isTab: true } }
   ]
 }
 

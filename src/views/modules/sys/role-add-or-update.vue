@@ -92,28 +92,29 @@ export default {
     // 表单提交
     dataFormSubmitHandle: debounce(function () {
       this.$refs['dataForm'].validate((valid) => {
-        if (!valid) {
-          return false
+        if (valid) {
+          this.dataForm.menuIdList = [
+            ...this.$refs.menuListTree.getHalfCheckedKeys(),
+            ...this.$refs.menuListTree.getCheckedKeys()
+          ]
+          this.$http.post(`/sys/dict/${!this.dataForm.id ? 'save' : 'update'}`, {
+            ...this.dataForm
+          }).then(({data}) => {
+            if(data && data.code === 0){
+              this.$message({
+                message: this.$t('prompt.success'),
+                type: 'success',
+                duration: 500,
+                onClose: () => {
+                  this.visible = false
+                  this.$emit('refreshDataList')
+                }
+              })
+            }else{
+              this.$message.error(res.msg)
+            }
+          }).catch(() => {})
         }
-        this.dataForm.menuIdList = [
-          ...this.$refs.menuListTree.getHalfCheckedKeys(),
-          ...this.$refs.menuListTree.getCheckedKeys()
-        ]
-        this.$http.post('/sys/role/saveOrUpdate', this.dataForm).then(({data}) => {
-          if(data && data.code === 0){
-            this.$message({
-              message: this.$t('prompt.success'),
-              type: 'success',
-              duration: 500,
-              onClose: () => {
-                this.visible = false
-                this.$emit('refreshDataList')
-              }
-            })
-          }else{
-            this.$message.error(res.msg)
-          }
-        }).catch(() => {})
       })
     }, 1000, { 'leading': true, 'trailing': false })
   }

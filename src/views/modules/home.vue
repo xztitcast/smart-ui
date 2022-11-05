@@ -6,7 +6,7 @@
   </el-card>
 </template>
 <script>
-  import Echarts from "./echarts";
+  import Echarts from "@/components/echarts";
   export default {
     components: {
       Echarts

@@ -12,7 +12,7 @@
           <el-button v-if="isAuth('sys:user:save')" type="primary" @click="addOrUpdateHandle()">{{ $t('add') }}</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()">{{ $t('deleteBatch') }}</el-button>
+          <el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">{{ $t('deleteBatch') }}</el-button>
         </el-form-item>
         <el-form-item>
           <el-button v-if="isAuth('sys:user:export')" type="info" @click="exportHandle()">{{ $t('export') }}</el-button>
