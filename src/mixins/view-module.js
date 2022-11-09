@@ -160,6 +160,9 @@ export default {
         ...this.dataForm
       })
       window.location.href = `${window.SITE_CONFIG['apiURL']}${this.mixinViewModuleOptions.exportURL}?${params}`
+    },
+    downloadHandle (url) {
+      window.location.href = `${url}`
     }
   }
 }

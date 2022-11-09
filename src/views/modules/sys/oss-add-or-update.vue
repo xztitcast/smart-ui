@@ -104,7 +104,7 @@
       dataFormSubmitHandle: debounce(function() {
         this.$refs['dataForm'].validate((valid) => {
           if(valid) {
-            this.$http.post('/sys/oss/saveOrUpdate',{
+            this.$http.post(`/sys/oss/${!this.dataForm.id ? 'save' : 'update'}`,{
               ...this.dataForm
             }).then(({data}) => {
               if(data && data.code === 0){
