@@ -3,12 +3,11 @@
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()"> 
       <el-form-item>
         <el-select v-model="dataForm.name" placeholder="请选择存储商">
-          <el-option :value="1" label="阿里云"></el-option>
-          <el-option :value="2" label="腾讯云"></el-option>
-          <el-option :value="3" label="七牛云"></el-option>
-          <el-option :value="4" label="华为云"></el-option>
-          <el-option :value="5" label="百度云"></el-option>
-          <el-option :value="5" label="百度云"></el-option>
+          <el-option value="ALIYUN" label="阿里云"></el-option>
+          <el-option value="QCLOUD" label="腾讯云"></el-option>
+          <el-option value="QINIU" label="七牛云"></el-option>
+          <el-option value="HUAWEI" label="华为云"></el-option>
+          <el-option value="MINIO" label="MIN云"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>

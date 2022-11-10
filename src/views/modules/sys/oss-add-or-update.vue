@@ -6,11 +6,11 @@
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="存储商" prop="name" required>
         <el-radio-group v-model="dataForm.name">
-          <el-radio label="阿里云"></el-radio>
-          <el-radio label="腾讯云"></el-radio>
-          <el-radio label="七牛云"></el-radio>
-          <el-radio label="华为云"></el-radio>
-          <el-radio label="百度云"></el-radio>
+          <el-radio value="MINIO" label="MINIO"></el-radio>
+          <el-radio value="ALIYUN" label="阿里云"></el-radio>
+          <el-radio value="QCLOUD" label="腾讯云"></el-radio>
+          <el-radio value="QINIU" label="七牛云"></el-radio>
+          <el-radio value="HUAWEI" label="华为云"></el-radio>
         </el-radio-group>
       </el-form-item> 
       <el-form-item label="域名" prop="domain">
@@ -47,7 +47,7 @@
         visible: false,
         dataForm: {
           id: null,
-          name:'阿里云',
+          name:'MINIO',
           domain: '',
           point: '',
           bucket: '',

@@ -1,11 +1,6 @@
 <template>
   <el-card shadow="never" class="site-card--fill">
     <div class="mod-sys__download">
-      <el-form inline :model="dataForm" @keyup.native.enter="getDataList()">
-        <el-form-item label="">
-
-        </el-form-item>
-      </el-form>
       <el-table
         border
         :data="dataList"
@@ -80,9 +75,6 @@
           getDataListIsPage: true,
           deleteURL: '/sys/download/delete',
           deleteIsBatch: true,
-        },
-        dataForm: {
-          key: ''
         }
       }
     }

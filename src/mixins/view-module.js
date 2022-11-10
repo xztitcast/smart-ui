@@ -78,8 +78,7 @@ export default {
         this.orderField = ''
         return false
       }
-      console.log(data)
-      this.order = data.order.replace(/ending$/, '') === 'asc'
+      this.order = data.order.replace(/ending$/, '') === 'desc'
       this.orderField = data.prop.replace(/([A-Z])/g, '_$1').toLowerCase()
       this.query()
     },
