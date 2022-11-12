@@ -97,7 +97,7 @@ export default {
             ...this.$refs.menuListTree.getHalfCheckedKeys(),
             ...this.$refs.menuListTree.getCheckedKeys()
           ]
-          this.$http.post(`/sys/role/${!this.dataForm.id ? 'save' : 'update'}`, {
+          this.$http.post(`/sys/role/${this.dataForm.id ? 'update' : 'save'}`, {
             ...this.dataForm
           }).then(({data}) => {
             if(data && data.code === 0){

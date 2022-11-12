@@ -159,7 +159,7 @@ export default {
     dataFormSubmitHandle: debounce(function () {
       this.$refs['dataForm'].validate((valid) => {
         if(valid) {
-          this.$http.post(`/sys/menu/${!this.dataForm.id ? 'save' : 'update'}`, {
+          this.$http.post(`/sys/menu/${this.dataForm.id ? 'update' : 'save'}`, {
             ...this.dataForm
           }).then(({data}) => {
             if(data && data.code === 0){

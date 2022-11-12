@@ -4,12 +4,14 @@
       <el-form-item prop="username" :label="$t('user.username')">
         <el-input v-model="dataForm.username" :placeholder="$t('user.username')"></el-input>
       </el-form-item>
-      <el-form-item prop="password" :label="$t('user.password')" :class="{ 'is-required': !dataForm.id }">
-        <el-input v-model="dataForm.password" type="password" :placeholder="$t('user.password')"></el-input>
-      </el-form-item>
-      <el-form-item prop="confirmPassword" :label="$t('user.confirmPassword')" :class="{ 'is-required': !dataForm.id }">
-        <el-input v-model="dataForm.confirmPassword" type="password" :placeholder="$t('user.confirmPassword')"></el-input>
-      </el-form-item>
+      <div v-if="!dataForm.id">
+        <el-form-item prop="password" :label="$t('user.password')" :class="{ 'is-required': !dataForm.id }">
+          <el-input v-model="dataForm.password" type="password" :placeholder="$t('user.password')" show-password></el-input>
+        </el-form-item>
+        <el-form-item prop="confirmPassword" :label="$t('user.confirmPassword')" :class="{ 'is-required': !dataForm.id }">
+          <el-input v-model="dataForm.confirmPassword" type="password" :placeholder="$t('user.confirmPassword')" show-password></el-input>
+        </el-form-item>
+      </div>
       <el-form-item prop="roleIdList" :label="$t('user.roleIdList')" class="role-list">
         <el-select v-model="dataForm.roleIdList" multiple :placeholder="$t('user.roleIdList')">
           <el-option v-for="role in roleList" :key="role.id" :label="role.name" :value="role.id"></el-option>
@@ -128,7 +130,7 @@ export default {
     dataFormSubmitHandle: debounce(function () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.$http.post('/sys/user/save', {
+          this.$http.post(`/sys/user/${this.dataForm.id ? 'update' : 'save'}`, {
             ...this.dataForm,
             roleIdList: [
               ...this.dataForm.roleIdList,
