@@ -90,13 +90,13 @@ export default {
   },
   methods: {
     statusSwitchChangeEvent(val, id){
-      this.$http.get(`/sys/user/status/${id}`, {params: {'value': val == 1}}).then(({data}) => {
+      this.$http.get(`/sys/user/status/${id}`, {params: {'value': val}}).then(({data}) => {
         if(data && data.code === 0){
-          this.getDataList()
           this.$message.success('操作成功!')
         }else{
           this.$message.error(data.msg)
         }
+        this.getDataList()
       })
     }
   }
